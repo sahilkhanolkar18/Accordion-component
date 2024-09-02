@@ -135,12 +135,12 @@ const App = () => {
             onClick={() => handleAccordionClick(item.id)}
           >
             <div className="flex items-center justify-between w-full ">
-              <div>
+              <div className="w-[90px]">
                 <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex gap-1">
                   <CalendarIcon /> {item.date}
                 </span>
               </div>
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center justify-start gap-2 w-[150px] ">
                 <img
                   className="w-10 h-10 rounded-full"
                   src="https://avatar.iran.liara.run/public/3"
@@ -148,23 +148,26 @@ const App = () => {
                 />
                 <p className="text-gray-600 text-sm">{item.name}</p>
               </div>
+              <div className="w-[90px] ">
+                <span
+                  className={`${item.categoryColor} text-xs font-medium me-2 px-2.5 py-0.5 rounded-full`}
+                >
+                  {item.category}
+                </span>
+              </div>
+              <div className="w-[80px]">
+                <p
+                  className={`text-sm font-semibold ${
+                    item.amount.startsWith("-")
+                      ? "text-red-600"
+                      : "text-green-600"
+                  }`}
+                >
+                  {item.amount}
+                </p>
+              </div>
 
-              <span
-                className={`${item.categoryColor} text-xs font-medium me-2 px-2.5 py-0.5 rounded-full`}
-              >
-                {item.category}
-              </span>
-              <p
-                className={`text-sm font-semibold ${
-                  item.amount.startsWith("-")
-                    ? "text-red-600"
-                    : "text-green-600"
-                }`}
-              >
-                {item.amount}
-              </p>
-
-              <div>
+              <div className="">
                 {openAccordionId === item.id ? <ArrowUp /> : <ArrowDown />}
               </div>
             </div>
