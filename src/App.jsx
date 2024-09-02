@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import CustomDropdown from "./Components/CustomDropDown";
 
 const CalendarIcon = () => {
   return (
@@ -97,17 +98,38 @@ const data = [
 const App = () => {
   const [openAccordionId, setOpenAccordionId] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const selectRef = useRef(null);
 
-  useEffect(() => {
-    if (openAccordionId !== null && selectRef.current) {
-      selectRef.current.focus();
-      // Timeout to allow focus to register
-      setTimeout(() => {
-        selectRef.current.click(); // Simulate click to open dropdown
-      }, 100);
-    }
-  }, [openAccordionId]);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [dropDownOneState, setDropDownOneState] = useState(false);
+
+  const [dropDownTwoState, setDropDownTwoState] = useState(false);
+  const [selectedOptionTwo, setSelectedOptionTwo] = useState("");
+
+  const onButtonClick = () => {
+    setDropDownOneState(!dropDownOneState);
+  };
+
+  const onButtonClickTwo = () => {
+    setDropDownTwoState(!dropDownTwoState);
+  };
+
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
+    setDropDownOneState(false);
+    setDropDownTwoState(true);
+  };
+
+  const handleOptionClickTwo = (option) => {
+    setSelectedOptionTwo(option);
+    setDropDownTwoState(false);
+  };
+
+  const EllipsisText = ({ text = "" }) => {
+    // Ensure text is a string and then truncate if needed
+    const truncatedText = text.length > 8 ? text.substring(0, 8) + "..." : text;
+
+    return truncatedText;
+  };
 
   const handleAccordionClick = (id) => {
     setOpenAccordionId(openAccordionId === id ? null : id);
@@ -132,11 +154,17 @@ const App = () => {
         <div key={item.id} className="">
           <div
             className="flex items-center justify-between cursor-pointer border px-4 py-2 w-[710px] mt-1"
-            onClick={() => handleAccordionClick(item.id)}
+            onClick={() => {
+              handleAccordionClick(item.id);
+              onButtonClick(true);
+            }}
           >
             <div className="flex items-center justify-between w-full ">
               <div className="w-[90px]">
-                <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex gap-1">
+                <span
+                  className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex gap-1"
+                  title={item.date}
+                >
                   <CalendarIcon /> {item.date}
                 </span>
               </div>
@@ -146,13 +174,16 @@ const App = () => {
                   src="https://avatar.iran.liara.run/public/3"
                   alt="Rounded avatar"
                 />
-                <p className="text-gray-600 text-sm">{item.name}</p>
+                <p className="text-gray-600 text-sm" title={item.name}>
+                  {item.name}
+                </p>
               </div>
               <div className="w-[90px] ">
                 <span
                   className={`${item.categoryColor} text-xs font-medium me-2 px-2.5 py-0.5 rounded-full`}
+                  title={item.category}
                 >
-                  {item.category}
+                  {EllipsisText({ text: item.category })}
                 </span>
               </div>
               <div className="w-[80px]">
@@ -162,6 +193,7 @@ const App = () => {
                       ? "text-red-600"
                       : "text-green-600"
                   }`}
+                  title={item.amount}
                 >
                   {item.amount}
                 </p>
@@ -179,29 +211,51 @@ const App = () => {
                 : "max-h-0 opacity-0"
             } mt-2 bg-blue-100 border w-[710px]`}
           >
+            {/* <div className="flex">
+              <div className="h-[500px] w-[250px]">
+                <CustomDropdown
+                  id="dropdown1"
+                  isOpen={dropDownOneState}
+                  selectedOption={selectedOption}
+                  handleOptionClick={handleOptionClick}
+                  onButtonClick={onButtonClick}
+                />
+              </div>
+
+              <div className="h-[500px] w-[250px]">
+                <CustomDropdown
+                  id="dropdown2"
+                  isOpen={dropDownTwoState}
+                  selectedOption={selectedOptionTwo}
+                  handleOptionClick={handleOptionClickTwo}
+                  onButtonClick={onButtonClickTwo}
+                />
+              </div>
+            </div> */}
+
             {currentStep === 1 && (
               <div className="flex flex-col gap-2 mb-3 px-4 pt-4 ">
                 <h1 className="text-gray-800 text-sm">
                   Select From the Drop Down
                 </h1>
-                <div className="flex items-center justify-center gap-4">
-                  <select
-                    ref={selectRef}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  >
-                    <option defaultValue>Choose an Option</option>
-                    <option>Option 1</option>
-                    <option>Option 2</option>
-                    <option>Option 3</option>
-                    <option>Option 4</option>
-                  </select>
-                  <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                    <option defaultValue>Choose an Option</option>
-                    <option>Option 1</option>
-                    <option>Option 2</option>
-                    <option>Option 3</option>
-                    <option>Option 4</option>
-                  </select>
+                <div className="flex h-[150px] justify-between">
+                  <div className=" w-[330px] ">
+                    <CustomDropdown
+                      isOpen={dropDownOneState}
+                      selectedOption={selectedOption}
+                      handleOptionClick={handleOptionClick}
+                      onButtonClick={onButtonClick}
+                    />
+                  </div>
+
+                  <div className="w-[330px]">
+                    <CustomDropdown
+                      isOpen={dropDownTwoState}
+                      selectedOption={selectedOptionTwo}
+                      handleOptionClick={handleOptionClickTwo}
+                      onButtonClick={onButtonClickTwo}
+                    />
+                  </div>
                 </div>
               </div>
             )}
